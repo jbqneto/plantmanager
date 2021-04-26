@@ -7,8 +7,16 @@ import {
 } from 'react-native';
 import { Button } from '../components/Button';
 import { colors, fonts } from '../styles';
+import { useNavigation } from '@react-navigation/core';
+import { Routes } from '../routes/paths';
 
 export function Confirmation() {
+
+  const navigation = useNavigation();
+
+  function handleConfirmation() {
+    navigation.navigate(Routes.PLANT_SELECT);
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -27,7 +35,7 @@ export function Confirmation() {
         </Text>
       
         <View style={styles.footer}>
-          <Button text="Começar" />
+          <Button onPress={handleConfirmation} text="Começar" />
         </View>
 
       </View>

@@ -8,13 +8,15 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Platform,
-  Keyboard
+  Keyboard,
+  Alert
 } from 'react-native'
 import { colors, fonts } from '../styles';
 
 import { Button } from '../components/Button';
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/core';
+import { Routes } from '../routes/paths';
 
 export function UserIdentification() {
   const [isFocused, setFocused] = useState(false);
@@ -24,7 +26,13 @@ export function UserIdentification() {
   const navigation = useNavigation();
 
   function handleSubmit() {
-    navigation.navigate("Confirmation");
+    if (!name) {
+      return Alert.alert("Preencha o seu nome.");
+    } else {
+      Alert.alert("Bem vindo, " + name);
+    }
+
+    navigation.navigate(Routes.CONFIRMATION);
   }
 
   function handleInputFocus() {
