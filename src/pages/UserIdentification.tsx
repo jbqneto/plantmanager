@@ -17,6 +17,7 @@ import { Button } from '../components/Button';
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/core';
 import { Routes } from '../routes/paths';
+import { saveUser } from '../service/UserService';
 
 export function UserIdentification() {
   const [isFocused, setFocused] = useState(false);
@@ -25,12 +26,12 @@ export function UserIdentification() {
 
   const navigation = useNavigation();
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (!name) {
       return Alert.alert("Preencha o seu nome.");
-    } else {
-      Alert.alert("Bem vindo, " + name);
     }
+
+    await saveUser(name);
 
     navigation.navigate(Routes.CONFIRMATION);
   }
