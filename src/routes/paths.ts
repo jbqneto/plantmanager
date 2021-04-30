@@ -3,5 +3,6 @@ export const Routes = {
   USER_IDENTIFICATION: "UserIdentification",
   CONFIRMATION: "Confirmation",
   PLANT_SELECT: "PlantSelect",
-  PLANT_SAVE: "PlantSave"
+  PLANT_SAVE: "PlantSave",
+  MY_PLANT: "MyPlant"
 }

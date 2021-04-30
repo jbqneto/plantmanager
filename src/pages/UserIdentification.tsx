@@ -33,7 +33,13 @@ export function UserIdentification() {
 
     await saveUser(name);
 
-    navigation.navigate(Routes.CONFIRMATION);
+    navigation.navigate(Routes.CONFIRMATION, {
+      title: 'Prontinho',
+      subtitle: `Agora vamos começar a cuidar das\nsuas plantinhas com muito cuidado.`,
+      buttonTItle: 'Começar',
+      icon: 'smile',
+      nextScreen: Routes.PLANT_SELECT
+    });
   }
 
   function handleInputFocus() {

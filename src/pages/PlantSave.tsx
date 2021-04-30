@@ -1,5 +1,5 @@
 import { FontAwesome5 } from '@expo/vector-icons';
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   StyleSheet, 
   View, 
@@ -12,7 +12,8 @@ import {
   Dimensions
 } from 'react-native'
 
-import { getBottomSpace, getStatusBarHeight } from 'react-native-iphone-x-helper';
+import { getBottomSpace } from 'react-native-iphone-x-helper';
+import { TimePicker, ValueMap } from 'react-native-simple-time-picker';
 
 import { useRoute } from '@react-navigation/core';
 
@@ -22,6 +23,11 @@ import waterdrop from '../assets/waterdrop.png';
 import { Button } from '../components/Button';
 import { colors, fonts } from '../styles';
 import { Plant } from '../model/Plant';
+import { format, isBefore } from 'date-fns';
+import { useEffect } from 'react';
+import { loadPlants, savePlant } from '../service/PlantService';
+import { useNavigation } from '@react-navigation/native';
+import { Routes } from '../routes/paths';
 
 interface Params {
   plant: Plant
@@ -30,6 +36,61 @@ interface Params {
  export function PlantSave() {
   const route = useRoute();
   const { plant } = route.params as Params;
+  const [hours, setHours] = useState(0);
+  const [minutes, setMinutes] = useState(0);
+  const [selectedTime, setSelectedTime] = useState(new Date());
+
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    setHours(selectedTime.getHours());
+    setMinutes(selectedTime.getMinutes());
+  }, []);
+
+
+  async function handleSavePlant() {
+    try {
+      const plants = await loadPlants();
+      console.log(plants);
+      await savePlant({...plant, dateTimeNotification: selectedTime})
+
+      navigation.navigate(Routes.CONFIRMATION, {
+        title: 'Tudo certo',
+        subtitle: `Fique tranquilo.\nVamos te lembrar de cuidar da sua plantinha.`,
+        buttonTItle: 'Começar',
+        icon: 'hug',
+        nextScreen: Routes.MY_PLANT
+      });
+
+    } catch(e) {
+      console.error(e);
+      Alert.alert("Erro ao tentar salvar planta!");
+    }
+  }
+
+  function handleTimeChange(val: ValueMap) {
+
+    const time = new Date();
+    time.setHours(val.hours);
+    time.setMinutes(val.minutes);
+
+    const now = new Date();
+
+  }
+
+  function handleTimePickerAndroid() {
+    
+  }
+
+  const TimePickerAndroid = () => {
+    return (
+      <TouchableOpacity style={styles.timePickerButton} onPress={handleTimePickerAndroid}>
+        <Text style={styles.timePickerText}>
+          {`Mudar horário (${format(selectedTime, 'HH:mm')})`}
+        </Text>
+      </TouchableOpacity>
+    )
+  }
 
    return (
      <View style={styles.container}>
@@ -65,7 +126,9 @@ interface Params {
             Escolha o melhor horário para ser lembrado
           </Text>
 
-          <Button text="Cadastrar planta" onPress={() => {}} />
+          <TimePicker val onChange={(newValue) => handleTimeChange(newValue)} value={{hours, minutes}} />
+
+          <Button text="Cadastrar planta" onPress={handleSavePlant} />
 
         </View>
 
@@ -143,5 +206,15 @@ interface Params {
      fontSize: 12,
      marginBottom: 5
    },
+   timePickerButton: {
+    width: '100%',
+    alignItems: 'center',
+    paddingVertical: 40
+   },
+   timePickerText: {
+    color: colors.heading,
+    fontSize: 24,
+    fontFamily: fonts.text
+   }
 
  });

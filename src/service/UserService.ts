@@ -1,19 +1,9 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
-
-const prefix = "@plantmanager";
-
-async function setItem(key: string, value: string) {
-  return AsyncStorage.setItem(`${prefix}:${key}`, value);
-}
-
-async function getItem(key: string) {
-  return AsyncStorage.getItem(`${prefix}:${key}`);
-}
+import { StorageRepository } from '../infrastructure/repository/storage';
 
 export async function saveUser(user: string) {
-  return await setItem('user', user);
+  return await StorageRepository.setItem('username', user);
 }
 
 export async function getUser() {
-  return getItem('user');
+  return StorageRepository.getItem('username');
 }
