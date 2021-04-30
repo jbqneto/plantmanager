@@ -7,7 +7,7 @@ import {
 import { RectButton, RectButtonProps } from 'react-native-gesture-handler';
 import { colors, fonts } from '../styles';
 import { SvgFromUri } from 'react-native-svg';
-//TODO 1HT:08
+
 interface PlantProps extends RectButtonProps {
   data: {
     name: string;

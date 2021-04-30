@@ -17,12 +17,14 @@ import { Button } from '../components/Button';
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/core';
 import { Routes } from '../routes/paths';
-import { saveUser } from '../service/UserService';
+import { getUser, saveUser } from '../service/UserService';
+import { Load } from '../components/Load';
 
 export function UserIdentification() {
   const [isFocused, setFocused] = useState(false);
   const [isFilled, setFilled] = useState(false);
   const [name, setName] = useState<string>();
+  const [isLoading, setLoading] = useState(true);
 
   const navigation = useNavigation();
 
@@ -36,7 +38,7 @@ export function UserIdentification() {
     navigation.navigate(Routes.CONFIRMATION, {
       title: 'Prontinho',
       subtitle: `Agora vamos começar a cuidar das\nsuas plantinhas com muito cuidado.`,
-      buttonTItle: 'Começar',
+      buttonTitle: 'Começar',
       icon: 'smile',
       nextScreen: Routes.PLANT_SELECT
     });
@@ -55,6 +57,9 @@ export function UserIdentification() {
     setFilled(!!value);
     setName(value);
   }
+
+  if (isLoading)
+    return <Load />
 
   return (
     <SafeAreaView style={styles.container}>

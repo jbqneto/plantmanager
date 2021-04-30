@@ -51,13 +51,13 @@ interface Params {
   async function handleSavePlant() {
     try {
       const plants = await loadPlants();
-      console.log(plants);
+
       await savePlant({...plant, dateTimeNotification: selectedTime})
 
       navigation.navigate(Routes.CONFIRMATION, {
-        title: 'Tudo certo',
+        title: 'Uhuuul!',
         subtitle: `Fique tranquilo.\nVamos te lembrar de cuidar da sua plantinha.`,
-        buttonTItle: 'Começar',
+        buttonTitle: 'Continuar',
         icon: 'hug',
         nextScreen: Routes.MY_PLANT
       });
@@ -70,12 +70,20 @@ interface Params {
 
   function handleTimeChange(val: ValueMap) {
 
+    console.log("val selected", val);
     const time = new Date();
+
+    console.log("NOW: ",time);
+
     time.setHours(val.hours);
     time.setMinutes(val.minutes);
+    time.setSeconds(0);
 
-    const now = new Date();
+    console.log("time",time);
 
+    setHours(val.hours);
+    setMinutes(val.minutes);
+    setSelectedTime(time);
   }
 
   function handleTimePickerAndroid() {
@@ -126,7 +134,7 @@ interface Params {
             Escolha o melhor horário para ser lembrado
           </Text>
 
-          <TimePicker val onChange={(newValue) => handleTimeChange(newValue)} value={{hours, minutes}} />
+          <TimePicker onChange={(newValue) => handleTimeChange(newValue)} value={{hours, minutes}} />
 
           <Button text="Cadastrar planta" onPress={handleSavePlant} />
 

@@ -16,13 +16,36 @@ import {colors, fonts} from '../styles';
 
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/core';
+import { Routes } from '../routes/paths';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { getUser } from '../service/UserService';
 
 export function Welcome() {
   const navigation = useNavigation();
+  const [user, setUser] = useState<string>("");
 
   function handleStart() {
-    navigation.navigate("UserIdentification");
+    if (user === "") {
+      navigation.navigate(Routes.USER_IDENTIFICATION);
+    } else {
+      navigation.navigate(Routes.PLANT_SELECT);
+    }
   }
+
+  useEffect(() => {
+    async function loadUser() {
+      const user = await getUser();
+
+      if (user) {
+        setUser(user);
+      }
+
+    }
+
+    loadUser();
+
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
