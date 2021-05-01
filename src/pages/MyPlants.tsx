@@ -21,6 +21,7 @@ import { CardSecondary } from '../components/CardSecondary';
    useEffect(() => {
     async function loadData() {
       const plants = await loadPlantsOrderedByDate();
+      console.log(plants);
 
       if (plants.length < 1)
         return;

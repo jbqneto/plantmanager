@@ -24,7 +24,6 @@ export function UserIdentification() {
   const [isFocused, setFocused] = useState(false);
   const [isFilled, setFilled] = useState(false);
   const [name, setName] = useState<string>();
-  const [isLoading, setLoading] = useState(true);
 
   const navigation = useNavigation();
 
@@ -57,9 +56,6 @@ export function UserIdentification() {
     setFilled(!!value);
     setName(value);
   }
-
-  if (isLoading)
-    return <Load />
 
   return (
     <SafeAreaView style={styles.container}>

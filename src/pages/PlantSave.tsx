@@ -73,13 +73,9 @@ interface Params {
     console.log("val selected", val);
     const time = new Date();
 
-    console.log("NOW: ",time);
-
     time.setHours(val.hours);
     time.setMinutes(val.minutes);
     time.setSeconds(0);
-
-    console.log("time",time);
 
     setHours(val.hours);
     setMinutes(val.minutes);
