@@ -97,7 +97,11 @@ interface Params {
   }
 
    return (
-     <View style={styles.container}>
+     <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={styles.container}
+     >
+       <View style={styles.container}>
        <View style={styles.plantInfo}>
         <SvgFromUri
           uri={plant.photo}
@@ -137,6 +141,7 @@ interface Params {
         </View>
 
       </View>
+     </ScrollView>
    );
 }
 
