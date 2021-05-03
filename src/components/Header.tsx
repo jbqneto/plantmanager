@@ -11,14 +11,28 @@ import { colors, fonts } from '../styles';
 
 import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 import userImg from '../assets/user.jpeg';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { getUser } from '../service/UserService';
 
 export function Header() {
+  const [userName, setUsername] = useState<string>();
+
+  useEffect(() => {
+    async function loadUserName() {
+      const user = await getUser();
+      setUsername(user || '');
+    }
+
+    loadUserName();
+
+  }, []);
 
   return (
     <View style={styles.container}>
       <View>
         <Text style={styles.greeting}>Olá,</Text>
-        <Text style={styles.user}>José</Text>
+        <Text style={styles.user}>{userName}</Text>
       </View>
 
       <Image style={styles.img} source={userImg} />
