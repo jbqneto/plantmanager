@@ -2,25 +2,40 @@ import React from 'react';
 import {
   StyleSheet,
   Text,
-  View
+  View,
+  Animated
 } from 'react-native';
 
-import { RectButton, RectButtonProps } from 'react-native-gesture-handler';
+import { RectButton, RectButtonProps, Swipeable } from 'react-native-gesture-handler';
 import { colors, fonts } from '../styles';
 import { SvgFromUri } from 'react-native-svg';
-//TODO 1HT:08
+import { Feather } from '@expo/vector-icons';
+
 interface PlantProps extends RectButtonProps {
   data: {
     name: string;
     photo: string;
     hour: string;
-  }
+  },
+  handleRemove: (item: any) => void
 }
 
-export function CardSecondary({data, ...rest}: PlantProps) {
+export function CardSecondary({data, handleRemove, ...rest}: PlantProps) {
 
   return (
+    <Swipeable overshootRight={false} 
+      renderRightActions={() => (
+        <Animated.View>
+          <RectButton
+            style={styles.btnRemove}
+            onPress={handleRemove}
+          >
+            <Feather name="trash" size={32} color={colors.white} />
+          </RectButton>
+        </Animated.View>
+      )}>
     <RectButton style={styles.container} {...rest}>
+      
       <SvgFromUri width={50} height={50} uri={data.photo} />
       
       <Text style={styles.title}>
@@ -38,6 +53,7 @@ export function CardSecondary({data, ...rest}: PlantProps) {
       </View>
 
     </RectButton>
+    </Swipeable>
   );
 }
 
@@ -72,6 +88,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: fonts.heading,
     color: colors.body_dark
+  },
+  btnRemove: {
+    width: 100,
+    height: 90,
+    backgroundColor: colors.red,
+    marginTop: 10,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+    paddingLeft: 15,
+    right: 20
   }
 
 })

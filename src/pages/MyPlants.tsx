@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image } from 'react-native'
+import { StyleSheet, View, Text, Image, Alert } from 'react-native'
 import { Header } from '../components/Header';
 
 import { colors, fonts } from '../styles';
@@ -8,21 +8,44 @@ import { FlatList } from 'react-native-gesture-handler';
 import { useState } from 'react';
 import { Plant } from '../model/Plant';
 import { useEffect } from 'react';
-import { loadPlants, loadPlantsOrderedByDate } from '../service/PlantService';
+import { loadPlants, loadPlantsOrderedByDate, removePlant } from '../service/PlantService';
 import { formatDistance } from 'date-fns';
 import { pt } from 'date-fns/locale';
 import { CardSecondary } from '../components/CardSecondary';
+import { Load } from '../components/Load';
 
  export function MyPlants() {
    const [myPlants, setMyPlants] = useState<Plant[]>([]);
    const [loading, setLoading] = useState(true);
    const [nextWatered, setNextWatered] = useState<string>()
+    //22 minutos
+   function handleRemove(plant: Plant) {
+    Alert.alert('Remover', `Deseja remover a ${plant.name}?`, [
+      {
+        text: 'Não',
+        style: 'cancel'
+      },
+      {
+        text: 'Sim',
+        onPress: async () => {
+          try {
+            await removePlant(plant.id);
+
+            setMyPlants((oldData) => (
+              oldData.filter(item => item.id !== plant.id)
+            )); 
+          } catch (error) {
+            Alert.alert("Não foi possível remover a planta!");
+          }
+        }
+      }
+    ])
+   }
 
    useEffect(() => {
     async function loadData() {
       const plants = await loadPlantsOrderedByDate();
-      console.log(plants);
-
+      
       if (plants.length < 1)
         return;
 
@@ -34,11 +57,15 @@ import { CardSecondary } from '../components/CardSecondary';
 
       setNextWatered(`Não esqueça de regar a ${plants[0].name} à ${nextTime} horas`);
       setMyPlants(plants);
+      setLoading(false);
     }
 
     loadData();
 
    }, []);
+
+   if (loading)
+    return <Load />
 
    return (
      <View style={styles.container}>
@@ -63,7 +90,7 @@ import { CardSecondary } from '../components/CardSecondary';
             keyExtractor={(item) => String(item.id)}
             data={myPlants} 
             renderItem={({item}) => (
-              <CardSecondary data={item} />
+              <CardSecondary handleRemove={() => handleRemove(item)} data={item} />
              )}
             />
 

@@ -11,6 +11,7 @@ export interface Plant {
   },
   dateTimeNotification: Date;
   hour?: string;
+  notificationId?: string;
 }
 
 export interface StoragePlant {

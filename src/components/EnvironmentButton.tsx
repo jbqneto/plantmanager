@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 12,
-    marginHorizontal: 5
+    marginRight: 5
   },
   text: {
     color: colors.heading,

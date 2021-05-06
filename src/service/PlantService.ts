@@ -1,28 +1,55 @@
-import { format } from 'date-fns';
-import { StorageRepository as repository} from '../infrastructure/repository/storage';
-import { Plant, StoragePlant } from '../model/Plant';
+import { PlantRepositoryImpl } from '../infrastructure/repository/storage/PlantRepositoryImpl';
+import { Plant } from '../model/Plant';
+import * as Notification from 'expo-notifications';
+import { Platform } from 'react-native';
+import { isBefore } from 'date-fns';
 
-export async function savePlant(plant: Plant): Promise<void> {
-  const data = await repository.getItem<StoragePlant>('plants');
-  const oldPlants = data ? data : {};
+const repository = new PlantRepositoryImpl();
 
-  const newPlant = {
-    [plant.id]: {
-      data: plant
-    }
-  };
+async function createNotification(plant: Plant): Promise<string> {
+  const nextTime = new Date(plant.dateTimeNotification);
+  const now = new Date();
 
-  let savePlant;
+  const { times, repeat_every } = plant.frequency;
 
-  if (oldPlants[plant.id]) {
-    savePlant = {...oldPlants};
-    savePlant[plant.id].data = plant;
+  if (repeat_every === 'week') {
+    const interval = Math.trunc(7 / times);
+    nextTime.setDate(now.getDate() + interval);
   } else {
-    savePlant = {...oldPlants,...newPlant};
+    const isbefore = isBefore(nextTime, now);
+    console.log("isBefore ?" + isBefore);
+    if (isbefore) {
+      nextTime.setDate(nextTime.getDate() + 1);
+    }
   }
 
-  await repository.setItem('plants', savePlant);
+  const secounds = Math.abs(Math.ceil(now.getTime() - nextTime.getTime()) / 1000);
 
+  const notificationId = await Notification.scheduleNotificationAsync({
+    content: {
+      title: 'Heeey, 🌱',
+      body: 'Está na hora de regar sua ' + plant.name,
+      sound: true,
+      priority: Notification.AndroidNotificationPriority.HIGH,
+      vibrate: [1],
+      data: {
+        plant
+      },
+    },
+    trigger: {
+      seconds: secounds < 60 ? 60 : secounds,
+      repeats: true
+    }
+  });
+
+  return notificationId;
+}
+
+export async function savePlant(plant: Plant): Promise<void> {
+  
+  const notificationId = await createNotification(plant);
+
+  return await repository.save(plant);
 }
 
 export async function loadPlantsOrderedByDate() {
@@ -37,22 +64,18 @@ export async function loadPlantsOrderedByDate() {
   return plants;
 }
 
+export async function removePlant(plantId: number) {
+  const plant = await repository.getById(plantId);
+
+  if (plant === null)
+    throw new Error(`Planta não encontrada '${plantId}'!`);
+
+  if (plant.notificationId)
+    await Notification.cancelScheduledNotificationAsync(plant.notificationId);
+
+  return await repository.delete(plantId);
+}
+
 export async function loadPlants(): Promise<Plant[]> {
-  const data = await repository.getItem<StoragePlant>('plants');
-  const plants = data ? data : {};
-  const date = new Date();
-  const offset = (date.getTimezoneOffset() / 60);
-
-  return Object.keys(plants)
-    .map((key) => {
-      const plant = plants[key].data;
-      const dtNotification = plant.dateTimeNotification;
-      const realDate = new Date(dtNotification);
-      const hour = format(realDate, 'HH:mm');
-      return {
-        ...plant,
-        hour: hour
-      }
-  });
-
+  return await repository.listAll();
 }
