@@ -12,18 +12,21 @@ import {
 import Routes from './src/routes';
 import { useEffect } from 'react';
 import { Plant } from './src/model/Plant';
+import { notificationListener } from './src/service/PlantService';
 
 export default function App() {
 
-  async function listener(notification: Notifications.Notification) {
-    const data = notification.request.content.data.plant as Plant;
-    
-    console.log(data);
-  }
-
   useEffect(() => {
+    
+    async function getNotifications() {
+      const notifications = await Notifications.getAllScheduledNotificationsAsync();
 
-    const subscription = Notifications.addNotificationReceivedListener(listener);
+      console.log("### notifications ###", notifications);
+    }
+
+    getNotifications();
+
+    const subscription = Notifications.addNotificationReceivedListener(notificationListener);
 
     return () => subscription.remove();
 

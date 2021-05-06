@@ -19,3 +19,11 @@ export interface StoragePlant {
     data: Plant
   }
 }
+
+export interface PlantNotification {
+  times: number;
+  repeat_every: string;
+  name: string;
+  id: number;
+  dateTimeNotification: Date
+}

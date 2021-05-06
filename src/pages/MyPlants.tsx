@@ -44,20 +44,26 @@ import { Load } from '../components/Load';
 
    useEffect(() => {
     async function loadData() {
-      const plants = await loadPlantsOrderedByDate();
-      
-      if (plants.length < 1)
+      try {
+        const plants = await loadPlantsOrderedByDate();
+
+        if (plants.length < 1)
         return;
 
-      const nextTime = formatDistance(
-        new Date(plants[0].dateTimeNotification).getTime(),
-        new Date().getTime(),{locale: pt});
+        const nextTime = formatDistance(
+          new Date(plants[0].dateTimeNotification).getTime(),
+          new Date().getTime(),{locale: pt});
 
-      const name = plants[0].name;
+        const name = plants[0].name;
 
-      setNextWatered(`Não esqueça de regar a ${plants[0].name} à ${nextTime} horas`);
-      setMyPlants(plants);
-      setLoading(false);
+        setNextWatered(`Não esqueça de regar a ${plants[0].name} à ${nextTime} horas`);
+        setMyPlants(plants);  
+      } catch (error) {
+        
+      } finally {
+        setLoading(false);
+      }
+      
     }
 
     loadData();
@@ -70,7 +76,7 @@ import { Load } from '../components/Load';
    return (
      <View style={styles.container}>
         <Header />
-
+        
         <View style={styles.spotlight}>
           <Image 
             style={styles.spotlightImg}
