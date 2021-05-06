@@ -50,7 +50,7 @@ async function createNotification(plant: PlantNotification): Promise<string> {
 
 export async function notificationListener(notification: Notification.Notification) {
   const data = notification.request.content.data.plant as PlantNotification;
-  console.log("notification listeter",data);
+  console.log("notification listener",data);
 
   setTimeout(() => {
     createNotification(data);
