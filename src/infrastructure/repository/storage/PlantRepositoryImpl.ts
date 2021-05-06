@@ -28,11 +28,15 @@ export class PlantRepositoryImpl implements PlantRepository {
     
   }
 
-  async listAll(): Promise<Plant[]> {
+  async getStoragePlant():Promise<StoragePlant> {
     const data = await Dao.getItem<StoragePlant>('plants');
     const plants = data ? data : {};
-    const date = new Date();
-    const offset = (date.getTimezoneOffset() / 60);
+    
+    return plants;
+  }
+
+  async listAll(): Promise<Plant[]> {
+    const plants = await this.getStoragePlant();
 
     return Object.keys(plants)
       .map((key) => {
@@ -47,12 +51,25 @@ export class PlantRepositoryImpl implements PlantRepository {
     });
   }
 
-  delete(id: number): Promise<void> {
-    throw new Error("Method not implemented.");
+  async delete(id: number): Promise<void> {
+    const plants = await this.getStoragePlant();
+    
+    if (plants[id])
+      delete plants[id];
+    else
+      throw new Error(`Planta não encontrada ${id}!`);
+
+    await Dao.setItem('plants', plants);
   }
   
-  getById(id: number): Promise<Plant | null> {
-    throw new Error("Method not implemented.");
+  async getById(id: number): Promise<Plant | null> {
+    const plants = await this.getStoragePlant();
+
+    if (plants[id]) {
+      return plants[id].data;
+    } else {
+      return null;
+    }
   }
 
 }

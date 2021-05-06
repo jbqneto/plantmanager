@@ -144,7 +144,7 @@ export function PlantSelect() {
         <Text style={styles.subtitle}>você quer colocar sua planta ?</Text>
       </View>
 
-      <View>
+      <View style={styles.envListWrapper}>
         <FlatList 
           horizontal 
           showsHorizontalScrollIndicator={false} 
@@ -193,9 +193,10 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: 'center',
     paddingBottom: 5,
+    paddingRight: 32,
     marginLeft: 32,
     marginRight: 32,
-    marginVertical: 32
+    marginVertical: 32,
   },
   header: {
     paddingHorizontal: 30
@@ -218,7 +219,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     justifyContent: 'center'
   },
-  plantsList: {
-
+  envListWrapper: {
+    width: '100%'
   }
 });

@@ -69,8 +69,6 @@ interface Params {
   }
 
   function handleTimeChange(val: ValueMap) {
-
-    console.log("val selected", val);
     const time = new Date();
 
     time.setHours(val.hours);

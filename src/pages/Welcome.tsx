@@ -26,7 +26,6 @@ export function Welcome() {
   const [user, setUser] = useState<string>("");
 
   function handleStart() {
-    console.log("user = " + user);
     if (user === "") {
       navigation.navigate(Routes.USER_IDENTIFICATION);
     } else {
@@ -91,7 +90,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
     textAlign: 'center',
     color: colors.heading,
     fontFamily: fonts.heading,

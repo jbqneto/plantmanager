@@ -8,7 +8,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import { useState } from 'react';
 import { Plant } from '../model/Plant';
 import { useEffect } from 'react';
-import { loadPlants, loadPlantsOrderedByDate } from '../service/PlantService';
+import { loadPlants, loadPlantsOrderedByDate, removePlant } from '../service/PlantService';
 import { formatDistance } from 'date-fns';
 import { pt } from 'date-fns/locale';
 import { CardSecondary } from '../components/CardSecondary';
@@ -18,7 +18,7 @@ import { Load } from '../components/Load';
    const [myPlants, setMyPlants] = useState<Plant[]>([]);
    const [loading, setLoading] = useState(true);
    const [nextWatered, setNextWatered] = useState<string>()
-
+    //22 minutos
    function handleRemove(plant: Plant) {
     Alert.alert('Remover', `Deseja remover a ${plant.name}?`, [
       {
@@ -28,7 +28,15 @@ import { Load } from '../components/Load';
       {
         text: 'Sim',
         onPress: async () => {
-          
+          try {
+            await removePlant(plant.id);
+
+            setMyPlants((oldData) => (
+              oldData.filter(item => item.id !== plant.id)
+            )); 
+          } catch (error) {
+            Alert.alert("Não foi possível remover a planta!");
+          }
         }
       }
     ])
