@@ -42,24 +42,25 @@ export function PlantSelect() {
   const navigator = useNavigation();
 
   async function fetchPlants() {
-    const {data} = await api.get(Endpoints.LIST_PLANTS 
-      + `?_sort=name&_order=asc&_page=${page}&_limit=6`);
+    try {
+      const data = await api.listPlants(page);
+      if(!data) {
+        return setLoading(true);
+      }
 
-    if(!data) {
-      return setLoading(true);
+      if (page > 1) {
+        setPlants(oldValue => [...oldValue, ...data]);
+        setFilteredPlants(oldValue => [...oldValue, ...data]);
+      } else {
+        setPlants(data);
+        setFilteredPlants(data); 
+      }
+
+      setLoading(false);
+      setLoadingMore(false);
+    } catch (e) {
+      console.error(e);
     }
-
-    if (page > 1) {
-      setPlants(oldValue => [...oldValue, ...data]);
-      setFilteredPlants(oldValue => [...oldValue, ...data]);
-    } else {
-      setPlants(data);
-      setFilteredPlants(data); 
-    }
-
-
-    setLoading(false);
-    setLoadingMore(false);
   }
 
   function handlePlantSelect(item: PlantProps) {
@@ -102,7 +103,7 @@ export function PlantSelect() {
 
     async function fetchEnvs() {
       try {
-        const {data} = await api.get(Endpoints.LIST_ENVIRONMENTS + '?_sort=title&_order=asc');
+        const data = await api.listEnvironments();
       
         setEnvs([
           {
@@ -221,5 +222,8 @@ const styles = StyleSheet.create({
   },
   envListWrapper: {
     width: '100%'
+  },
+  plantsList: {
+
   }
 });

@@ -11,10 +11,9 @@ Tutorial do quinto NLW da RocketSeat, cujo objetivo final era o desenvolvimento 
 * Node
 * ReactNative
 * Expo (npm i -g expo-cli)
-* json-server (npm i -g json-server)
+* API Rodando em servidor da vercel
 
 ## Passos para rodar
 
 * npm install
-* npm run server
 * expo start
