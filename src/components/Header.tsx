@@ -73,6 +73,9 @@ export function Header() {
 
       if (user) {
         setUser(user);
+        if (user.image) {
+          setProfilePicture(user.image);
+        }
       } else {
         Alert.alert("No user");
       }

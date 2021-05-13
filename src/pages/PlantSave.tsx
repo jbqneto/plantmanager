@@ -132,7 +132,10 @@ interface Params {
             Escolha o melhor horário para ser lembrado
           </Text>
 
-          <TimePicker onChange={(newValue) => handleTimeChange(newValue)} value={{hours, minutes}} />
+          <TimePicker 
+            textColor={colors.green_dark} 
+            onChange={(newValue) => handleTimeChange(newValue)} 
+            value={{hours, minutes}} />
 
           <Button text="Cadastrar planta" onPress={handleSavePlant} />
 
@@ -212,6 +215,10 @@ interface Params {
      color: colors.heading,
      fontSize: 12,
      marginBottom: 5
+   },
+   timePicker: {
+    borderBottomColor: colors.green_dark,
+    color: colors.green_dark
    },
    timePickerButton: {
     width: '100%',
