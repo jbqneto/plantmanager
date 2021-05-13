@@ -17,7 +17,7 @@ import { Button } from '../components/Button';
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/core';
 import { Routes } from '../routes/paths';
-import { getUser, saveUser } from '../service/UserService';
+import { saveUser } from '../service/UserService';
 import { Load } from '../components/Load';
 
 export function UserIdentification() {
@@ -32,7 +32,7 @@ export function UserIdentification() {
       return Alert.alert("Preencha o seu nome.");
     }
 
-    await saveUser(name);
+    await saveUser({username: name});
 
     navigation.navigate(Routes.CONFIRMATION, {
       title: 'Prontinho',
