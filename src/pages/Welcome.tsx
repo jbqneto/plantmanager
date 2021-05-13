@@ -39,7 +39,7 @@ export function Welcome() {
         const user = await getUser();
 
         if (user) {
-          setUser(user);
+          setUser(user.username);
         }
 
       } catch(e) {
