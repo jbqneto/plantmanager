@@ -56,7 +56,7 @@ import { Load } from '../components/Load';
 
         const name = plants[0].name;
 
-        setNextWatered(`Não esqueça de regar a ${plants[0].name} à ${nextTime} horas`);
+        setNextWatered(`Não esqueça de regar a ${plants[0].name} à ${nextTime}`);
         setMyPlants(plants);  
       } catch (error) {
         

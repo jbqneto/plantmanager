@@ -28,6 +28,7 @@ import { useEffect } from 'react';
 import { loadPlants, savePlant } from '../service/PlantService';
 import { useNavigation } from '@react-navigation/native';
 import { Routes } from '../routes/paths';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 interface Params {
   plant: Plant
@@ -39,18 +40,28 @@ interface Params {
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [selectedTime, setSelectedTime] = useState(new Date());
+  const [showPicker, setShowPicker] = useState(false);
 
   const navigation = useNavigation();
 
   useEffect(() => {
     setHours(selectedTime.getHours());
     setMinutes(selectedTime.getMinutes());
+
+    if (Platform.OS === 'ios') {
+      setShowPicker(true);
+    }
+
   }, []);
 
+  async function toggleTimePicker() {
+    setShowPicker(value => !value);
+  }
 
   async function handleSavePlant() {
     try {
-      const plants = await loadPlants();
+
+      console.log(`selected time: ${selectedTime}`);
 
       await savePlant({...plant, dateTimeNotification: selectedTime})
 
@@ -80,13 +91,17 @@ interface Params {
     setSelectedTime(time);
   }
 
-  function handleTimePickerAndroid() {
+  function handleTimePickerAndroid(event: any, selectedDate: any) {
+    setShowPicker(false);
+    if (selectedDate !== undefined) {
+      setSelectedTime(selectedDate);
+    }
     
   }
 
   const TimePickerAndroid = () => {
     return (
-      <TouchableOpacity style={styles.timePickerButton} onPress={handleTimePickerAndroid}>
+      <TouchableOpacity style={styles.timePickerButton} onPress={toggleTimePicker}>
         <Text style={styles.timePickerText}>
           {`Mudar horário (${format(selectedTime, 'HH:mm')})`}
         </Text>
@@ -99,7 +114,7 @@ interface Params {
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.container}
      >
-       <View style={styles.container}>
+      <View style={styles.container}>
        <View style={styles.plantInfo}>
         <SvgFromUri
           uri={plant.photo}
@@ -132,10 +147,21 @@ interface Params {
             Escolha o melhor horário para ser lembrado
           </Text>
 
-          <TimePicker 
-            textColor={colors.green_dark} 
-            onChange={(newValue) => handleTimeChange(newValue)} 
-            value={{hours, minutes}} />
+          {(Platform.OS === 'android') && (
+            TimePickerAndroid()
+          )}
+
+          {showPicker && (
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={selectedTime}
+                    mode='time'
+                    is24Hour={true}
+                    display="default"
+                    onChange={handleTimePickerAndroid}
+                  />
+                )}
+
 
           <Button text="Cadastrar planta" onPress={handleSavePlant} />
 
@@ -164,6 +190,7 @@ interface Params {
      flex: 1,
      paddingHorizontal: 30,
      paddingVertical: 50,
+     marginBottom: 5,
      alignItems: 'center',
      justifyContent: 'center',
      backgroundColor: colors.shape
@@ -195,7 +222,7 @@ interface Params {
      alignItems: 'center',
      backgroundColor: colors.blue_light,
      position: 'relative',
-     bottom: 60
+     bottom: 30
    },
    tipText: {
     flex: 1,

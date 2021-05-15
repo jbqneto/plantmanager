@@ -7,7 +7,7 @@ import { PlantMapper } from '../mapper/PlantMapper';
 
 const repository = new PlantRepositoryImpl();
 
-async function createNotification(plant: PlantNotification): Promise<string> {
+export async function createPlantNotification(plant: PlantNotification): Promise<string> {
   const nextTime = new Date(plant.dateTimeNotification);
   const now = new Date();
 
@@ -21,8 +21,6 @@ async function createNotification(plant: PlantNotification): Promise<string> {
   } else if (isbefore) {
     nextTime.setDate(nextTime.getDate() + 1);
   }
-
-  console.log("next time: ", nextTime);
 
   const secounds = Math.abs(Math.ceil(now.getTime() - nextTime.getTime()) / 1000);
 
@@ -48,18 +46,9 @@ async function createNotification(plant: PlantNotification): Promise<string> {
   return notificationId;
 }
 
-export async function notificationListener(notification: Notification.Notification) {
-  const data = notification.request.content.data.plant as PlantNotification;
-  console.log("notification listener",data);
-
-  setTimeout(() => {
-    createNotification(data);
-  }, 1000);
-}
-
 export async function savePlant(plant: Plant): Promise<void> {
   
-  const notificationId = await createNotification(PlantMapper.toPlantNotification(plant));
+  const notificationId = await createPlantNotification(PlantMapper.toPlantNotification(plant));
 
   plant.notificationId = notificationId;
 

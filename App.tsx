@@ -9,15 +9,29 @@ import {
   Jost_600SemiBold
 } from '@expo-google-fonts/jost'
 
+import * as Notification from 'expo-notifications';
+
 import Routes from './src/routes';
 import { useEffect } from 'react';
-import { Plant } from './src/model/Plant';
-import { notificationListener } from './src/service/PlantService';
+import { Plant, PlantNotification } from './src/model/Plant';
+import { createPlantNotification } from './src/service/PlantService';
+import { clearUser } from './src/service/UserService';
+
+async function notificationListener(notification: Notification.Notification) {
+  const data = notification.request.content.data.plant as PlantNotification;
+  console.log("notification listener",data);
+
+  createPlantNotification(data);
+}
 
 export default function App() {
 
   useEffect(() => {
     
+    async function clearNotifications() {
+      await Notifications.cancelAllScheduledNotificationsAsync();
+    }
+
     async function getNotifications() {
       const notifications = await Notifications.getAllScheduledNotificationsAsync();
 
@@ -25,10 +39,11 @@ export default function App() {
     }
 
     getNotifications();
+    clearNotifications();
+    clearUser();
+    // const subscription = Notifications.addNotificationReceivedListener(notificationListener);
 
-    const subscription = Notifications.addNotificationReceivedListener(notificationListener);
-
-    return () => subscription.remove();
+    // return () => subscription.remove();
 
   }, []);
 
